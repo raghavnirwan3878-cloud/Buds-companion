@@ -1,6 +1,8 @@
 package com.budscompanion.app;
 
+import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,23 +11,27 @@ import android.content.SharedPreferences;
 import androidx.core.content.ContextCompat;
 
 /**
- * Starts monitoring automatically when our saved earbuds connect over
- * Bluetooth, and stops (notification included) the moment they disconnect.
+ * Starts monitoring when our saved earbuds' A2DP (music) profile actually
+ * connects, and stops immediately when it disconnects.
  *
- * This only decides *whether* to start/stop - the actual delay before we
- * touch the earbuds' Bluetooth channel lives inside BudsConnectionService
- * itself (see INITIAL_SETTLE_DELAY_MS there), not here. A broadcast
- * receiver's onReceive() is not a safe place to sit and wait several
- * seconds - the process isn't guaranteed to stay alive that long - so this
- * just starts the (already delay-aware) service immediately and lets it
- * handle timing internally.
+ * This deliberately tracks the A2DP profile's own connection state rather
+ * than the raw ACL link. The raw link can stay up even after the user
+ * manually disconnects the device in system Bluetooth settings, if
+ * something else - including our own RFCOMM socket - is still holding it
+ * open. A2DP's connection state reflects what Bluetooth settings actually
+ * shows, so reacting to it keeps us in sync with the user's real intent,
+ * and - critically - makes sure we close our own socket the moment the
+ * user disconnects, instead of leaving the earbuds "occupied" and unable
+ * to pair with another device.
  */
 public class BluetoothConnectionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (action == null) return;
+        if (!BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED.equals(action)) {
+            return;
+        }
 
         BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
         if (device == null) return;
@@ -44,15 +50,19 @@ public class BluetoothConnectionReceiver extends BroadcastReceiver {
             return; // some other Bluetooth device, not our earbuds
         }
 
-        if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+        int state = intent.getIntExtra(BluetoothProfile.EXTRA_STATE, -1);
+
+        if (state == BluetoothProfile.STATE_CONNECTED) {
             boolean monitoringEnabled = prefs.getBoolean(BudsConnectionService.PREF_MONITORING_ENABLED, true);
             if (!monitoringEnabled) {
                 return; // user turned monitoring off manually - don't override that
             }
             ContextCompat.startForegroundService(context, new Intent(context, BudsConnectionService.class));
-        } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-            // Stopping the service removes its foreground notification
-            // automatically - nothing lingers once the earbuds are gone.
+        } else if (state == BluetoothProfile.STATE_DISCONNECTED) {
+            // Stopping the service closes our RFCOMM socket right away -
+            // if our own channel was the one thing still keeping the
+            // earbuds' Bluetooth link alive, this is what actually
+            // releases them to pair with another device.
             context.stopService(new Intent(context, BudsConnectionService.class));
         }
     }
