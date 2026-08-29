@@ -44,6 +44,15 @@
         </receiver>
 
         <receiver
+            android:name=".BluetoothConnectionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name=".BudsWidgetProvider"
             android:exported="false">
             <intent-filter>
