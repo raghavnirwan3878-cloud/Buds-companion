@@ -86,6 +86,13 @@ public class BudsConnectionService extends Service {
     private static final long RECONNECT_BASE_DELAY_MS = 5_000L;
     private static final long RECONNECT_MAX_DELAY_MS = 60_000L;
 
+    // Wait this long after the service starts before we touch the earbuds at
+    // all. This matters most right after they connect over Bluetooth - it
+    // gives the phone's own profiles (HFP for the mic, A2DP for audio) time
+    // to finish their own negotiation undisturbed before we open a separate
+    // RFCOMM channel of our own.
+    private static final long INITIAL_SETTLE_DELAY_MS = 6_000L;
+
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final OppoProtocol protocol = new OppoProtocol();
     private final OppoProtocol.FrameReader frameReader = new OppoProtocol.FrameReader();
@@ -117,7 +124,9 @@ public class BudsConnectionService extends Service {
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                 .putBoolean(PREF_MONITORING_ENABLED, true)
                 .apply();
-        connectLoop();
+        // Deliberately delayed rather than immediate - see
+        // INITIAL_SETTLE_DELAY_MS above for why.
+        handler.postDelayed(this::connectLoop, INITIAL_SETTLE_DELAY_MS);
         return START_STICKY;
     }
 
