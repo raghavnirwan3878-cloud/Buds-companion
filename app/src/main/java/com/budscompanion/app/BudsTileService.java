@@ -70,7 +70,7 @@ public class BudsTileService extends TileService {
                 label.append("R").append(right).append("%");
             }
             tile.setLabel(label.length() > 0 ? label.toString() : "Devices");
-            tile.setSubtitle(null);
+            tile.setSubtitle("");
         }
         tile.updateTile();
     }

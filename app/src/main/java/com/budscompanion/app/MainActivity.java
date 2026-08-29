@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -41,6 +43,19 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    // Self-refresh loop: don't rely solely on the broadcast above, since it
+    // wasn't firing reliably while this screen stayed open on some devices.
+    // Simply re-reading the stored values every second while visible is
+    // cheap and always correct, regardless of broadcast delivery quirks.
+    private final Handler refreshHandler = new Handler(Looper.getMainLooper());
+    private final Runnable refreshLoop = new Runnable() {
+        @Override
+        public void run() {
+            refreshStatus();
+            refreshHandler.postDelayed(this, 1000);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,13 +79,14 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         registerReceiver(updateReceiver, new IntentFilter(BudsConnectionService.ACTION_LEVELS_UPDATED),
                 Context.RECEIVER_NOT_EXPORTED);
-        refreshStatus();
+        refreshHandler.post(refreshLoop);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(updateReceiver);
+        refreshHandler.removeCallbacks(refreshLoop);
     }
 
     private void refreshStatus() {
@@ -180,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Choose your earbuds first", Toast.LENGTH_SHORT).show();
             return;
         }
+        prefs.edit().putBoolean(BudsConnectionService.PREF_MONITORING_ENABLED, true).apply();
         Intent svc = new Intent(this, BudsConnectionService.class);
         ContextCompat.startForegroundService(this, svc);
         Toast.makeText(this, "Monitoring started", Toast.LENGTH_SHORT).show();
