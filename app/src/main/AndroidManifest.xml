@@ -22,14 +22,22 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:theme="@style/Theme.BudsCompanion">
 
+        <!-- New multi-screen UI entry point -->
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".HomeActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.BudsCompanion">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Kept but no longer the launcher -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
 
         <service
             android:name=".BudsConnectionService"
