@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="appBackground" format="reference" />
+    <attr name="appSurface" format="reference" />
+    <attr name="appSurfaceSmall" format="reference" />
+    <attr name="appGaugeBackground" format="reference" />
+    <attr name="appPrimaryButton" format="reference" />
+    <attr name="appIconBackground" format="reference" />
+    <attr name="appProgressDrawable" format="reference" />
+    <attr name="appText" format="color" />
+    <attr name="appTextSoft" format="color" />
+    <attr name="appTextFaint" format="color" />
+    <attr name="appAccent" format="color" />
+</resources>

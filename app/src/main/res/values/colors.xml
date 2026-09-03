@@ -16,4 +16,5 @@
     <color name="classic_text">#14151A</color>
     <color name="classic_text_soft">#6B6F7A</color>
     <color name="classic_line">#E4E6ED</color>
+    <color name="liquid_status_bar">#0B0E17</color>
 </resources>
