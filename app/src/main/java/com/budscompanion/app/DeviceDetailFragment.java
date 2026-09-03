@@ -1,18 +1,13 @@
 package com.budscompanion.app;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,17 +18,6 @@ import androidx.navigation.Navigation;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
-/**
- * Screen 3 — Device detail.
- *
- * Hero: three large BatteryTickViews for L / R / Case with % labels.
- * Sections (per-model visibility handled in bindModel()):
- *   - Find My Buds button
- *   - ANC / Transparency mode toggle  (T200 only)
- *   - Game Mode switch                (T200 only)
- *   - Button settings row → navigates to ButtonSettingsFragment
- *   - Device details row  → navigates to DeviceInfoFragment
- */
 public class DeviceDetailFragment extends Fragment {
 
     private static final String PREFS      = "buds_prefs";
@@ -43,19 +27,13 @@ public class DeviceDetailFragment extends Fragment {
     private Handler handler;
     private Runnable refreshRunnable;
 
-    // Hero battery views
     private BatteryTickView tickLeft, tickRight, tickCase;
     private TextView tvLeftPct, tvRightPct, tvCasePct;
-    private TextView tvLeftLabel, tvRightLabel, tvCaseLabel;
-
-    // Feature cards
     private MaterialCardView cardAnc, cardGameMode;
     private Switch switchGameMode;
     private TextView tvAncMode;
     private MaterialButton btnFindBuds;
 
-    // Detected model
-    private String modelName = "";
     private boolean isT200 = false;
 
     @Nullable
@@ -73,11 +51,9 @@ public class DeviceDetailFragment extends Fragment {
         prefs   = requireContext().getSharedPreferences(PREFS, 0);
         handler = new Handler(Looper.getMainLooper());
 
-        // Back button
         view.findViewById(R.id.btn_back).setOnClickListener(v ->
                 Navigation.findNavController(v).navigateUp());
 
-        // Hero
         tickLeft   = view.findViewById(R.id.tick_left);
         tickRight  = view.findViewById(R.id.tick_right);
         tickCase   = view.findViewById(R.id.tick_case);
@@ -85,53 +61,41 @@ public class DeviceDetailFragment extends Fragment {
         tvRightPct = view.findViewById(R.id.tv_right_pct);
         tvCasePct  = view.findViewById(R.id.tv_case_pct);
 
-        // Feature sections
         btnFindBuds   = view.findViewById(R.id.btn_find_buds);
         cardAnc       = view.findViewById(R.id.card_anc);
         tvAncMode     = view.findViewById(R.id.tv_anc_mode);
         cardGameMode  = view.findViewById(R.id.card_game_mode);
         switchGameMode = view.findViewById(R.id.switch_game_mode);
 
-        // Navigation rows
         view.findViewById(R.id.row_button_settings).setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_deviceDetail_to_buttonSettings));
         view.findViewById(R.id.row_device_info).setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_deviceDetail_to_deviceInfo));
 
         btnFindBuds.setOnClickListener(v -> sendFindDevice());
-
-        // ANC cycle: Off → ANC → Transparency → Off
         cardAnc.setOnClickListener(v -> cycleAncMode());
-
-        // Game Mode toggle
         switchGameMode.setOnCheckedChangeListener((btn, checked) -> sendGameMode(checked));
 
-        // Detect model
         detectModel();
-        bindModel(view);
+
+        // Show/hide T200-only sections
+        int t200Visibility = isT200 ? View.VISIBLE : View.GONE;
+        cardAnc.setVisibility(t200Visibility);
+        cardGameMode.setVisibility(t200Visibility);
 
         refreshRunnable = this::refresh;
     }
 
     private void detectModel() {
-        // Resolve name from bonded devices
         android.bluetooth.BluetoothAdapter adapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
         String mac = prefs.getString("device_mac", null);
         if (adapter != null && mac != null) {
             try {
                 android.bluetooth.BluetoothDevice device = adapter.getRemoteDevice(mac);
                 String name = device.getName();
-                if (name != null) modelName = name.toUpperCase();
+                if (name != null) isT200 = name.toUpperCase().contains("T200");
             } catch (Exception ignored) {}
         }
-        isT200 = modelName.contains("T200");
-    }
-
-    /** Show/hide feature sections based on model capabilities. */
-    private void bindModel(View view) {
-        // ANC and Game Mode: T200 only
-        cardAnc.setVisibility(isT200 ? View.VISIBLE : View.GONE);
-        cardGameMode.setVisibility(isT200 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -143,7 +107,7 @@ public class DeviceDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        handler.removeCallbacks(refreshRunnable);
+        if (refreshRunnable != null) handler.removeCallbacks(refreshRunnable);
     }
 
     private void refresh() {
@@ -155,18 +119,23 @@ public class DeviceDetailFragment extends Fragment {
         setSlot(tickRight, tvRightPct, right);
         setSlot(tickCase,  tvCasePct,  cas);
 
-        // Restore ANC label from prefs
-        String ancMode = prefs.getString("anc_mode", "Off");
-        tvAncMode.setText(ancMode);
+        // Only update ANC/game mode views if visible (T200)
+        if (isT200) {
+            String ancMode = prefs.getString("anc_mode", "Off");
+            if (tvAncMode != null) tvAncMode.setText(ancMode);
 
-        // Restore game mode state
-        boolean gameModeOn = prefs.getBoolean("game_mode_enabled", false);
-        switchGameMode.setOnCheckedChangeListener(null);
-        switchGameMode.setChecked(gameModeOn);
-        switchGameMode.setOnCheckedChangeListener((btn, checked) -> sendGameMode(checked));
+            boolean gameModeOn = prefs.getBoolean("game_mode_enabled", false);
+            if (switchGameMode != null) {
+                switchGameMode.setOnCheckedChangeListener(null);
+                switchGameMode.setChecked(gameModeOn);
+                switchGameMode.setOnCheckedChangeListener((btn, checked) -> sendGameMode(checked));
+            }
+        }
 
-        handler.removeCallbacks(refreshRunnable);
-        handler.postDelayed(refreshRunnable, REFRESH_MS);
+        if (refreshRunnable != null) {
+            handler.removeCallbacks(refreshRunnable);
+            handler.postDelayed(refreshRunnable, REFRESH_MS);
+        }
     }
 
     private void setSlot(BatteryTickView tick, TextView label, int level) {
@@ -198,9 +167,8 @@ public class DeviceDetailFragment extends Fragment {
         }
         String next = ANC_MODES[(idx + 1) % ANC_MODES.length];
         prefs.edit().putString("anc_mode", next).apply();
-        tvAncMode.setText(next);
+        if (tvAncMode != null) tvAncMode.setText(next);
 
-        // Send to service
         Intent intent = new Intent(requireContext(), BudsConnectionService.class);
         intent.setAction(BudsConnectionService.ACTION_SET_ANC);
         intent.putExtra(BudsConnectionService.EXTRA_ANC_MODE, next);
