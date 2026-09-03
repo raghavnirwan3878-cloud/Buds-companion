@@ -19,7 +19,7 @@
         android:allowBackup="true"
         android:label="Devices"
         android:icon="@drawable/ic_headphones"
-        android:theme="@style/Theme.AppCompat.DayNight">
+        android:theme="@style/Theme.BudsCompanion">
 
         <activity
             android:name=".MainActivity"
