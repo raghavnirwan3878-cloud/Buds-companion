@@ -18,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean detailsScreen = false;
     private boolean receiverRegistered = false;
     private String appliedTheme;
+    private String appliedConfig;
 
     private final BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
@@ -58,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences themePrefs = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE);
         appliedTheme = themePrefs.getString("theme", "liquid");
-        setTheme("classic".equals(appliedTheme)
-                ? R.style.Theme_BudsCompanionClassic
-                : R.style.Theme_BudsCompanion);
+        appliedConfig = ThemeManager.configKey(themePrefs);
+        ThemeManager.applyNightMode(themePrefs);
+        setTheme(ThemeManager.themeRes(this, appliedTheme, themePrefs));
 
         super.onCreate(savedInstanceState);
         showDevicesScreen();
@@ -69,10 +72,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String currentTheme = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE)
-                .getString("theme", "liquid");
-        if (appliedTheme != null && !appliedTheme.equals(currentTheme)) {
-            appliedTheme = currentTheme;
+        SharedPreferences currentPrefs = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE);
+        String currentConfig = ThemeManager.configKey(currentPrefs);
+        if (appliedConfig != null && !appliedConfig.equals(currentConfig)) {
+            appliedConfig = currentConfig;
+            appliedTheme = currentPrefs.getString("theme", "liquid");
+            ThemeManager.applyNightMode(currentPrefs);
             recreate();
             return;
         }
@@ -97,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private void showDevicesScreen() {
         detailsScreen = false;
         setContentView(R.layout.activity_main);
+        ThemeManager.applyToRoot(this, findViewById(R.id.root_scroll));
         bindViews();
 
         View detailsButton = findViewById(R.id.device_details_button);
@@ -126,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
         detailsScreen = true;
         setContentView(R.layout.activity_device_details);
+        ThemeManager.applyToRoot(this, findViewById(R.id.details_scroll));
         bindViews();
 
         View backButton = findViewById(R.id.back_button);
