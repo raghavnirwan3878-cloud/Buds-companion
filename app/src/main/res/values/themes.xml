@@ -16,6 +16,7 @@
         <item name="appGaugeBackground">@drawable/bg_gauge</item>
         <item name="appPrimaryButton">@drawable/bg_primary_pill</item>
         <item name="appIconBackground">@drawable/bg_glass_icon</item>
+        <item name="appSurfaceButton">@drawable/bg_glass_button</item>
         <item name="appProgressDrawable">@drawable/progress_liquid</item>
         <item name="appText">@color/liquid_text</item>
         <item name="appTextSoft">@color/liquid_text_soft</item>
@@ -39,6 +40,7 @@
         <item name="appGaugeBackground">@drawable/bg_classic_gauge</item>
         <item name="appPrimaryButton">@drawable/bg_classic_pill</item>
         <item name="appIconBackground">@drawable/bg_classic_icon</item>
+        <item name="appSurfaceButton">@drawable/bg_classic_pill</item>
         <item name="appProgressDrawable">@drawable/progress_classic</item>
         <item name="appText">@color/classic_text</item>
         <item name="appTextSoft">@color/classic_text_soft</item>
