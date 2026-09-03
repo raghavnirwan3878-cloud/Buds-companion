@@ -17,4 +17,12 @@
     <color name="classic_text_soft">#6B6F7A</color>
     <color name="classic_line">#E4E6ED</color>
     <color name="liquid_status_bar">#0B0E17</color>
+    <color name="liquid_light_status_bar">#F2F5F9</color>
+    <color name="liquid_light_text">#171A22</color>
+    <color name="liquid_light_text_soft">#6A6F7C</color>
+    <color name="liquid_light_text_faint">#8A8F9A</color>
+    <color name="classic_dark_bg">#0D111B</color>
+    <color name="classic_dark_text">#F4F5FA</color>
+    <color name="classic_dark_text_soft">#B1B6C4</color>
+    <color name="classic_dark_text_faint">#7D8494</color>
 </resources>

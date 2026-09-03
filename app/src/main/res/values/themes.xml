@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Default dark Liquid Glass -->
     <style name="Theme.BudsCompanion" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:fontFamily">sans</item>
         <item name="android:windowActionModeOverlay">true</item>
@@ -16,7 +17,6 @@
         <item name="appGaugeBackground">@drawable/bg_gauge</item>
         <item name="appPrimaryButton">@drawable/bg_primary_pill</item>
         <item name="appIconBackground">@drawable/bg_glass_icon</item>
-        <item name="appSurfaceButton">@drawable/bg_glass_button</item>
         <item name="appProgressDrawable">@drawable/progress_liquid</item>
         <item name="appText">@color/liquid_text</item>
         <item name="appTextSoft">@color/liquid_text_soft</item>
@@ -24,6 +24,31 @@
         <item name="appAccent">@color/liquid_primary</item>
     </style>
 
+    <!-- Light Liquid Glass -->
+    <style name="Theme.BudsCompanionLiquidLight" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:colorAccent">?attr/appAccent</item>
+        <item name="android:windowBackground">?attr/appBackground</item>
+        <item name="android:statusBarColor">@color/liquid_light_status_bar</item>
+        <item name="android:navigationBarColor">@color/liquid_light_status_bar</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="appBackground">@drawable/bg_liquid</item>
+        <item name="appSurface">@drawable/bg_glass</item>
+        <item name="appSurfaceSmall">@drawable/bg_glass_small</item>
+        <item name="appGaugeBackground">@drawable/bg_gauge</item>
+        <item name="appPrimaryButton">@drawable/bg_primary_pill</item>
+        <item name="appIconBackground">@drawable/bg_glass_icon</item>
+        <item name="appProgressDrawable">@drawable/progress_liquid</item>
+        <item name="appText">@color/liquid_light_text</item>
+        <item name="appTextSoft">@color/liquid_light_text_soft</item>
+        <item name="appTextFaint">@color/liquid_light_text_faint</item>
+        <item name="appAccent">@color/liquid_primary</item>
+    </style>
+
+    <!-- Classic light -->
     <style name="Theme.BudsCompanionClassic" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>
         <item name="android:windowActionModeOverlay">true</item>
@@ -40,11 +65,34 @@
         <item name="appGaugeBackground">@drawable/bg_classic_gauge</item>
         <item name="appPrimaryButton">@drawable/bg_classic_pill</item>
         <item name="appIconBackground">@drawable/bg_classic_icon</item>
-        <item name="appSurfaceButton">@drawable/bg_classic_pill</item>
         <item name="appProgressDrawable">@drawable/progress_classic</item>
         <item name="appText">@color/classic_text</item>
         <item name="appTextSoft">@color/classic_text_soft</item>
         <item name="appTextFaint">#8A8D98</item>
         <item name="appAccent">#5967E8</item>
+    </style>
+
+    <!-- Classic dark -->
+    <style name="Theme.BudsCompanionClassicDark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:colorAccent">#8D9AFF</item>
+        <item name="android:windowBackground">@drawable/bg_classic_dark</item>
+        <item name="android:statusBarColor">@color/classic_dark_bg</item>
+        <item name="android:navigationBarColor">@color/classic_dark_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="appBackground">@drawable/bg_classic_dark</item>
+        <item name="appSurface">@drawable/bg_classic_dark_surface</item>
+        <item name="appSurfaceSmall">@drawable/bg_classic_dark_small</item>
+        <item name="appGaugeBackground">@drawable/bg_classic_dark_gauge</item>
+        <item name="appPrimaryButton">@drawable/bg_classic_dark_pill</item>
+        <item name="appIconBackground">@drawable/bg_classic_dark_icon</item>
+        <item name="appProgressDrawable">@drawable/progress_classic</item>
+        <item name="appText">@color/classic_dark_text</item>
+        <item name="appTextSoft">@color/classic_dark_text_soft</item>
+        <item name="appTextFaint">@color/classic_dark_text_faint</item>
+        <item name="appAccent">#8D9AFF</item>
     </style>
 </resources>
