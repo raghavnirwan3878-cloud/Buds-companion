@@ -14,8 +14,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,13 +34,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView deviceText;
     private TextView debugText;
     private TextView debugStatusText;
+    private TextView dataReceivingText;
+
     private ProgressBar leftBatteryBar, rightBatteryBar, caseBatteryBar;
     private TextView leftBatteryText, rightBatteryText, caseBatteryText;
-    private TextView dataReceivingText;
-    private SharedPreferences prefs;
 
-    private final SharedPreferences.OnSharedPreferenceChangeListener preferenceListener =
-            (sharedPreferences, key) -> refreshStatus();
+    private TextView detailDeviceText, detailConnectionText, detailDataReceivingText, detailInfoText;
+    private ProgressBar detailLeftBatteryBar, detailRightBatteryBar, detailCaseBatteryBar;
+    private TextView detailLeftBatteryText, detailRightBatteryText, detailCaseBatteryText;
+
+    private boolean detailsScreen = false;
+    private boolean receiverRegistered = false;
 
     private final BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
@@ -51,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // The first theming pass is Liquid Glass. Keep the preference hook so the
-        // later Classic/Liquid selector can switch without touching connection code.
         SharedPreferences themePrefs = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE);
         if ("classic".equals(themePrefs.getString("theme", "liquid"))) {
             setTheme(R.style.Theme_BudsCompanion);
@@ -61,99 +63,159 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        showDevicesScreen();
+    }
 
-        // Keep the system bars visually attached to the Liquid Glass background.
-        getWindow().setStatusBarColor(android.graphics.Color.rgb(9, 13, 22));
-        getWindow().setNavigationBarColor(android.graphics.Color.rgb(9, 13, 22));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().getDecorView().setSystemUiVisibility(0);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!receiverRegistered) {
+            registerReceiver(updateReceiver,
+                    new IntentFilter(BudsConnectionService.ACTION_LEVELS_UPDATED),
+                    Context.RECEIVER_NOT_EXPORTED);
+            receiverRegistered = true;
+        }
+        refreshStatus();
+    }
+
+    @Override
+    protected void onPause() {
+        if (receiverRegistered) {
+            unregisterReceiver(updateReceiver);
+            receiverRegistered = false;
+        }
+        super.onPause();
+    }
+
+    private void showDevicesScreen() {
+        detailsScreen = false;
+        setContentView(R.layout.activity_main);
+        bindViews();
+
+        View detailsButton = findViewById(R.id.device_details_button);
+        if (detailsButton != null) {
+            detailsButton.setOnClickListener(v -> showDeviceDetailsScreen());
         }
 
-        prefs = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE);
+        View settingsButton = findViewById(R.id.settings_button);
+        if (settingsButton != null) {
+            settingsButton.setOnClickListener(v ->
+                    Toast.makeText(this, "Settings will be added in the next stage", Toast.LENGTH_SHORT).show());
+        }
 
+        Button chooseDeviceBtn = findViewById(R.id.choose_device_button);
+        Button startServiceBtn = findViewById(R.id.start_service_button);
+        if (chooseDeviceBtn != null) chooseDeviceBtn.setOnClickListener(v -> chooseDeviceDialog());
+        if (startServiceBtn != null) startServiceBtn.setOnClickListener(v -> requestPermissionsThenStart());
+        refreshStatus();
+    }
+
+    private void showDeviceDetailsScreen() {
+        SharedPreferences prefs = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE);
+        if (prefs.getString(BudsConnectionService.PREF_MAC, null) == null) {
+            Toast.makeText(this, "Choose your earbuds first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        detailsScreen = true;
+        setContentView(R.layout.activity_device_details);
+        bindViews();
+
+        View backButton = findViewById(R.id.back_button);
+        if (backButton != null) backButton.setOnClickListener(v -> showDevicesScreen());
+        refreshStatus();
+    }
+
+    private void bindViews() {
         statusText = findViewById(R.id.status_text);
         deviceText = findViewById(R.id.device_text);
         debugText = findViewById(R.id.debug_text);
         debugStatusText = findViewById(R.id.debug_status_text);
+        dataReceivingText = findViewById(R.id.data_receiving_text);
+
         leftBatteryBar = findViewById(R.id.left_battery_bar);
         rightBatteryBar = findViewById(R.id.right_battery_bar);
         caseBatteryBar = findViewById(R.id.case_battery_bar);
         leftBatteryText = findViewById(R.id.left_battery_text);
         rightBatteryText = findViewById(R.id.right_battery_text);
         caseBatteryText = findViewById(R.id.case_battery_text);
-        dataReceivingText = findViewById(R.id.data_receiving_text);
-        Button chooseDeviceBtn = findViewById(R.id.choose_device_button);
-        Button startServiceBtn = findViewById(R.id.start_service_button);
 
-        chooseDeviceBtn.setOnClickListener(v -> chooseDeviceDialog());
-        startServiceBtn.setOnClickListener(v -> requestPermissionsThenStart());
-
-        refreshStatus();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        registerReceiver(updateReceiver, new IntentFilter(BudsConnectionService.ACTION_LEVELS_UPDATED),
-                Context.RECEIVER_NOT_EXPORTED);
-        prefs.registerOnSharedPreferenceChangeListener(preferenceListener);
-        refreshStatus();
-    }
-
-    @Override
-    protected void onStop() {
-        if (prefs != null) {
-            prefs.unregisterOnSharedPreferenceChangeListener(preferenceListener);
-        }
-        unregisterReceiver(updateReceiver);
-        super.onStop();
+        detailDeviceText = findViewById(R.id.detail_device_text);
+        detailConnectionText = findViewById(R.id.detail_connection_text);
+        detailDataReceivingText = findViewById(R.id.detail_data_receiving_text);
+        detailInfoText = findViewById(R.id.detail_info_text);
+        detailLeftBatteryBar = findViewById(R.id.detail_left_battery_bar);
+        detailRightBatteryBar = findViewById(R.id.detail_right_battery_bar);
+        detailCaseBatteryBar = findViewById(R.id.detail_case_battery_bar);
+        detailLeftBatteryText = findViewById(R.id.detail_left_battery_text);
+        detailRightBatteryText = findViewById(R.id.detail_right_battery_text);
+        detailCaseBatteryText = findViewById(R.id.detail_case_battery_text);
     }
 
     private void refreshStatus() {
         SharedPreferences prefs = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE);
         String mac = prefs.getString(BudsConnectionService.PREF_MAC, null);
-        deviceText.setText(mac != null ? "Selected device: " + mac : "No device selected yet");
-
         boolean connected = prefs.getBoolean(BudsConnectionService.PREF_CONNECTED, false);
-        boolean receiving = prefs.getBoolean(BudsConnectionService.PREF_DATA_RECEIVING, false);
+        boolean receiving = connected;
 
-        if (dataReceivingText != null) {
-            dataReceivingText.setText(receiving ? "Data receiving: ON" : "Data receiving: OFF");
-            dataReceivingText.setAlpha(receiving ? 1.0f : 0.65f);
+        if (deviceText != null) {
+            deviceText.setText(mac != null ? "Selected device: " + mac : "No device selected yet");
+        }
+        if (detailDeviceText != null) {
+            detailDeviceText.setText(mac != null ? mac : "No device selected");
         }
 
+        int l = prefs.getInt(BudsConnectionService.PREF_LEFT, -1);
+        int r = prefs.getInt(BudsConnectionService.PREF_RIGHT, -1);
+        int c = prefs.getInt(BudsConnectionService.PREF_CASE, -1);
+        long caseTs = prefs.getLong(BudsConnectionService.PREF_CASE_TS, 0);
+        boolean caseFresh = connected && (System.currentTimeMillis() - caseTs) < 25_000L;
+
         if (!connected) {
-            statusText.setText("Disconnected");
+            if (statusText != null) statusText.setText("Disconnected");
             updateBatteryGauge(leftBatteryBar, leftBatteryText, -1, false);
             updateBatteryGauge(rightBatteryBar, rightBatteryText, -1, false);
             updateBatteryGauge(caseBatteryBar, caseBatteryText, -1, false);
         } else {
-            int l = prefs.getInt(BudsConnectionService.PREF_LEFT, -1);
-            int r = prefs.getInt(BudsConnectionService.PREF_RIGHT, -1);
-            int c = prefs.getInt(BudsConnectionService.PREF_CASE, -1);
-            long caseTs = prefs.getLong(BudsConnectionService.PREF_CASE_TS, 0);
-            boolean caseFresh = (System.currentTimeMillis() - caseTs) < 25_000L;
-
+            StringBuilder sb = new StringBuilder();
+            if (l >= 0) sb.append("Left: ").append(l).append("%\n");
+            if (r >= 0) sb.append("Right: ").append(r).append("%\n");
+            if (c >= 0 && caseFresh) sb.append("Case: ").append(c).append("%\n");
+            if (statusText != null) statusText.setText(sb.length() > 0 ? sb.toString().trim() : "Connected - waiting for a reading…");
             updateBatteryGauge(leftBatteryBar, leftBatteryText, l, true);
             updateBatteryGauge(rightBatteryBar, rightBatteryText, r, true);
             updateBatteryGauge(caseBatteryBar, caseBatteryText, c, caseFresh);
+        }
 
-            StringBuilder sb = new StringBuilder();
-            if (l > 0) sb.append("Left: ").append(l).append("%\n");
-            if (r > 0) sb.append("Right: ").append(r).append("%\n");
-            if (c > 0 && caseFresh) sb.append("Case: ").append(c).append("%\n");
-            statusText.setText(sb.length() > 0 ? sb.toString().trim() : "Connected - waiting for a reading\u2026");
+        updateBatteryGauge(detailLeftBatteryBar, detailLeftBatteryText, l, connected);
+        updateBatteryGauge(detailRightBatteryBar, detailRightBatteryText, r, connected);
+        updateBatteryGauge(detailCaseBatteryBar, detailCaseBatteryText, c, caseFresh);
+
+        String connectionLabel = connected ? "Connected" : "Disconnected";
+        String receivingLabel = receiving ? "Data receiving: ON" : "Data receiving: OFF";
+        if (detailConnectionText != null) detailConnectionText.setText(connectionLabel);
+        if (dataReceivingText != null) dataReceivingText.setText(receivingLabel);
+        if (detailDataReceivingText != null) detailDataReceivingText.setText(receiving ? "ON" : "OFF");
+
+        if (detailInfoText != null) {
+            detailInfoText.setText(
+                    "Address: " + (mac != null ? mac : "—") + "\n" +
+                    "Connection: " + connectionLabel + "\n" +
+                    "Data receiving: " + (receiving ? "ON" : "OFF"));
         }
 
         boolean subAcked = prefs.getBoolean(BudsConnectionService.PREF_SUBSCRIPTION_ACKED, false);
         boolean gotPush = prefs.getBoolean(BudsConnectionService.PREF_GOT_PUSH_UPDATE, false);
-        debugStatusText.setText(
-                "Subscription acknowledged: " + (subAcked ? "YES" : "no") + "\n" +
-                "Received a pushed update: " + (gotPush ? "YES" : "no (relying on polling)"));
+        if (debugStatusText != null) {
+            debugStatusText.setText(
+                    "Subscription acknowledged: " + (subAcked ? "YES" : "no") + "\n" +
+                    "Received a pushed update: " + (gotPush ? "YES" : "no (relying on polling)"));
+        }
 
-        String rawLog = prefs.getString(BudsConnectionService.PREF_LAST_RAW, "");
-        debugText.setText(rawLog.isEmpty() ? "(no data received from buds yet)" : rawLog);
+        if (debugText != null) {
+            String rawLog = prefs.getString(BudsConnectionService.PREF_LAST_RAW, "");
+            debugText.setText(rawLog.isEmpty() ? "(no data received from buds yet)" : rawLog);
+        }
     }
 
     private void updateBatteryGauge(ProgressBar bar, TextView label, int value, boolean valid) {
@@ -161,6 +223,15 @@ public class MainActivity extends AppCompatActivity {
         boolean show = valid && value >= 0 && value <= 100;
         bar.setProgress(show ? value : 0);
         label.setText(show ? value + "%" : "—");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (detailsScreen) {
+            showDevicesScreen();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /** Let the user pick from already-paired Bluetooth devices. */
@@ -193,7 +264,8 @@ public class MainActivity extends AppCompatActivity {
         String[] names = new String[devices.size()];
         for (int i = 0; i < devices.size(); i++) {
             try {
-                names[i] = devices.get(i).getName() + "  (" + devices.get(i).getAddress() + ")";
+                String name = devices.get(i).getName();
+                names[i] = (name == null ? "Unknown device" : name) + "  (" + devices.get(i).getAddress() + ")";
             } catch (SecurityException e) {
                 names[i] = devices.get(i).getAddress();
             }
@@ -202,10 +274,10 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Select your earbuds")
                 .setItems(names, (dialog, which) -> {
-                    String mac = devices.get(which).getAddress();
+                    String selectedMac = devices.get(which).getAddress();
                     getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE)
                             .edit()
-                            .putString(BudsConnectionService.PREF_MAC, mac)
+                            .putString(BudsConnectionService.PREF_MAC, selectedMac)
                             .apply();
                     refreshStatus();
                     Toast.makeText(this, "Saved. Tap 'Start monitoring' next.", Toast.LENGTH_SHORT).show();
