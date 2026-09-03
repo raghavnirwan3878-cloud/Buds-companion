@@ -151,6 +151,15 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/data_receiving_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Data receiving: OFF"
+            android:textColor="@color/liquid_text_faint"
+            android:textSize="11sp" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
