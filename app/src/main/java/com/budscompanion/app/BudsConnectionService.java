@@ -9,7 +9,9 @@ import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.IntentFilter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -70,6 +72,7 @@ public class BudsConnectionService extends Service {
     public static final String PREF_SUBSCRIPTION_ACKED = "subscription_acked";
     public static final String PREF_GOT_PUSH_UPDATE = "got_push_update";
     public static final String PREF_MONITORING_ENABLED = "monitoring_enabled";
+    public static final String PREF_DATA_RECEIVING = "data_receiving";
     public static final String ACTION_LEVELS_UPDATED = "com.budscompanion.app.LEVELS_UPDATED";
 
     // Case battery is only considered "current" if we heard about it within
@@ -93,8 +96,44 @@ public class BudsConnectionService extends Service {
     private BluetoothSocket socket;
     private OutputStream outStream;
     private volatile boolean running = false;
+    private volatile boolean dataReceivingEnabled = true;
     private volatile boolean gotFirstReading = false;
     private long reconnectDelay = RECONNECT_BASE_DELAY_MS;
+
+
+    /**
+     * Follows the phone's classic-Bluetooth link to the selected earbuds.
+     * The RFCOMM data channel is only allowed to run while the device link is
+     * present. This prevents polling/reconnect traffic after the earbuds leave
+     * Bluetooth range and immediately resumes reception when they reconnect.
+     */
+    private final BroadcastReceiver bluetoothLinkReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+            if (device == null || !isSelectedDevice(device)) {
+                return;
+            }
+
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                dataReceivingEnabled = false;
+                getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                        .putBoolean(PREF_DATA_RECEIVING, false)
+                        .apply();
+                handler.removeCallbacks(pollRunnable);
+                markDisconnected();
+                closeSocketQuietly();
+            } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                dataReceivingEnabled = true;
+                reconnectDelay = RECONNECT_BASE_DELAY_MS;
+                getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                        .putBoolean(PREF_DATA_RECEIVING, true)
+                        .apply();
+                broadcastUpdate();
+            }
+        }
+    };
 
     private final Runnable pollRunnable = new Runnable() {
         @Override
@@ -108,14 +147,24 @@ public class BudsConnectionService extends Service {
     public void onCreate() {
         super.onCreate();
         createNotificationChannels();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(bluetoothLinkReceiver, filter, Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(bluetoothLinkReceiver, filter);
+        }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(NOTIF_ID_STATUS, buildStatusNotification("Starting\u2026"));
         running = true;
+        dataReceivingEnabled = true;
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                 .putBoolean(PREF_MONITORING_ENABLED, true)
+                .putBoolean(PREF_DATA_RECEIVING, true)
                 .apply();
         connectLoop();
         return START_STICKY;
@@ -129,7 +178,15 @@ public class BudsConnectionService extends Service {
     @Override
     public void onDestroy() {
         running = false;
+        dataReceivingEnabled = false;
         handler.removeCallbacksAndMessages(null);
+        try {
+            unregisterReceiver(bluetoothLinkReceiver);
+        } catch (Exception ignored) {
+        }
+        getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                .putBoolean(PREF_DATA_RECEIVING, false)
+                .apply();
         markDisconnected();
         closeSocketQuietly();
         super.onDestroy();
@@ -140,6 +197,13 @@ public class BudsConnectionService extends Service {
     private void connectLoop() {
         new Thread(() -> {
             while (running) {
+                if (!dataReceivingEnabled) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ignored) {
+                    }
+                    continue;
+                }
                 try {
                     attemptConnect();
                     reconnectDelay = RECONNECT_BASE_DELAY_MS; // reset backoff on success
@@ -156,6 +220,9 @@ public class BudsConnectionService extends Service {
 
                 if (!running) {
                     return;
+                }
+                if (!dataReceivingEnabled) {
+                    continue;
                 }
                 try {
                     Thread.sleep(reconnectDelay);
@@ -202,13 +269,14 @@ public class BudsConnectionService extends Service {
         gotFirstReading = false;
         prefs.edit()
                 .putBoolean(PREF_CONNECTED, true)
+                .putBoolean(PREF_DATA_RECEIVING, true)
                 .putBoolean(PREF_SUBSCRIPTION_ACKED, false)
                 .putBoolean(PREF_GOT_PUSH_UPDATE, false)
                 .apply();
         handler.post(() -> {
             updateStatusNotification("Connected");
             BudsWidgetProvider.updateAllWidgets(this);
-            sendBroadcast(new Intent(ACTION_LEVELS_UPDATED));
+            broadcastUpdate();
             requestTileRefresh();
         });
 
@@ -257,6 +325,9 @@ public class BudsConnectionService extends Service {
     }
 
     private void handleFrame(byte[] frame) {
+        if (!dataReceivingEnabled) {
+            return;
+        }
         logRawFrame(frame);
         OppoProtocol.Decoded decoded = OppoProtocol.decodeFrame(frame);
         if (decoded == null) {
@@ -265,7 +336,7 @@ public class BudsConnectionService extends Service {
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         if (decoded.isSubscriptionAck) {
             prefs.edit().putBoolean(PREF_SUBSCRIPTION_ACKED, true).apply();
-            handler.post(() -> sendBroadcast(new Intent(ACTION_LEVELS_UPDATED)));
+            handler.post(() -> broadcastUpdate());
         }
         if (decoded.isPushedUpdate) {
             prefs.edit().putBoolean(PREF_GOT_PUSH_UPDATE, true).apply();
@@ -278,6 +349,9 @@ public class BudsConnectionService extends Service {
     }
 
     private void sendBatteryRequest() {
+        if (!running || !dataReceivingEnabled) {
+            return;
+        }
         try {
             write(protocol.encodeBatteryReq());
         } catch (IOException e) {
@@ -322,9 +396,26 @@ public class BudsConnectionService extends Service {
                 .apply();
         handler.post(() -> {
             BudsWidgetProvider.updateAllWidgets(this);
-            sendBroadcast(new Intent(ACTION_LEVELS_UPDATED));
+            broadcastUpdate();
             requestTileRefresh();
         });
+    }
+
+    private void broadcastUpdate() {
+        Intent update = new Intent(ACTION_LEVELS_UPDATED);
+        update.setPackage(getPackageName());
+        sendBroadcast(update);
+    }
+
+    private boolean isSelectedDevice(BluetoothDevice device) {
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        String selectedMac = prefs.getString(PREF_MAC, null);
+        if (selectedMac == null) return false;
+        try {
+            return selectedMac.equalsIgnoreCase(device.getAddress());
+        } catch (SecurityException e) {
+            return false;
+        }
     }
 
     private boolean hasBtPermission() {
@@ -389,7 +480,7 @@ public class BudsConnectionService extends Service {
         handler.post(() -> {
             updateStatusNotification(summaryText(getSharedPreferences(PREFS, MODE_PRIVATE)));
             BudsWidgetProvider.updateAllWidgets(this);
-            sendBroadcast(new Intent(ACTION_LEVELS_UPDATED));
+            broadcastUpdate();
             requestTileRefresh();
         });
     }

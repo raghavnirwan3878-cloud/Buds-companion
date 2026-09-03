@@ -36,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView debugStatusText;
     private ProgressBar leftBatteryBar, rightBatteryBar, caseBatteryBar;
     private TextView leftBatteryText, rightBatteryText, caseBatteryText;
+    private TextView dataReceivingText;
+    private SharedPreferences prefs;
+
+    private final SharedPreferences.OnSharedPreferenceChangeListener preferenceListener =
+            (sharedPreferences, key) -> refreshStatus();
 
     private final BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
@@ -58,6 +63,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Keep the system bars visually attached to the Liquid Glass background.
+        getWindow().setStatusBarColor(android.graphics.Color.rgb(9, 13, 22));
+        getWindow().setNavigationBarColor(android.graphics.Color.rgb(9, 13, 22));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(0);
+        }
+
+        prefs = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE);
+
         statusText = findViewById(R.id.status_text);
         deviceText = findViewById(R.id.device_text);
         debugText = findViewById(R.id.debug_text);
@@ -68,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         leftBatteryText = findViewById(R.id.left_battery_text);
         rightBatteryText = findViewById(R.id.right_battery_text);
         caseBatteryText = findViewById(R.id.case_battery_text);
+        dataReceivingText = findViewById(R.id.data_receiving_text);
         Button chooseDeviceBtn = findViewById(R.id.choose_device_button);
         Button startServiceBtn = findViewById(R.id.start_service_button);
 
@@ -78,17 +93,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         registerReceiver(updateReceiver, new IntentFilter(BudsConnectionService.ACTION_LEVELS_UPDATED),
                 Context.RECEIVER_NOT_EXPORTED);
+        prefs.registerOnSharedPreferenceChangeListener(preferenceListener);
         refreshStatus();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        if (prefs != null) {
+            prefs.unregisterOnSharedPreferenceChangeListener(preferenceListener);
+        }
         unregisterReceiver(updateReceiver);
+        super.onStop();
     }
 
     private void refreshStatus() {
@@ -97,6 +116,12 @@ public class MainActivity extends AppCompatActivity {
         deviceText.setText(mac != null ? "Selected device: " + mac : "No device selected yet");
 
         boolean connected = prefs.getBoolean(BudsConnectionService.PREF_CONNECTED, false);
+        boolean receiving = prefs.getBoolean(BudsConnectionService.PREF_DATA_RECEIVING, false);
+
+        if (dataReceivingText != null) {
+            dataReceivingText.setText(receiving ? "Data receiving: ON" : "Data receiving: OFF");
+            dataReceivingText.setAlpha(receiving ? 1.0f : 0.65f);
+        }
 
         if (!connected) {
             statusText.setText("Disconnected");
