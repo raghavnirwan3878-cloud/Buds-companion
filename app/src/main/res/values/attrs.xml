@@ -3,12 +3,13 @@
     <attr name="appBackground" format="reference" />
     <attr name="appSurface" format="reference" />
     <attr name="appSurfaceSmall" format="reference" />
+    <attr name="appSurface_button" format="reference" />
     <attr name="appGaugeBackground" format="reference" />
     <attr name="appPrimaryButton" format="reference" />
     <attr name="appIconBackground" format="reference" />
     <attr name="appProgressDrawable" format="reference" />
     <attr name="appText" format="color" />
-    <attr name="appTextSoft" format="color" />
-    <attr name="appTextFaint" format="color" />
+    <attr name="appText_soft" format="color" />
+    <attr name="appText_faint" format="color" />
     <attr name="appAccent" format="color" />
 </resources>
