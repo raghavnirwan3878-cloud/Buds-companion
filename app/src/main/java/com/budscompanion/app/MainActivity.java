@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView deviceText;
     private TextView debugText;
     private TextView debugStatusText;
+    private ProgressBar leftBatteryBar, rightBatteryBar, caseBatteryBar;
+    private TextView leftBatteryText, rightBatteryText, caseBatteryText;
 
     private final BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
@@ -43,6 +46,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // The first theming pass is Liquid Glass. Keep the preference hook so the
+        // later Classic/Liquid selector can switch without touching connection code.
+        SharedPreferences themePrefs = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE);
+        if ("classic".equals(themePrefs.getString("theme", "liquid"))) {
+            setTheme(R.style.Theme_BudsCompanion);
+        } else {
+            setTheme(R.style.Theme_BudsCompanion);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -50,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
         deviceText = findViewById(R.id.device_text);
         debugText = findViewById(R.id.debug_text);
         debugStatusText = findViewById(R.id.debug_status_text);
+        leftBatteryBar = findViewById(R.id.left_battery_bar);
+        rightBatteryBar = findViewById(R.id.right_battery_bar);
+        caseBatteryBar = findViewById(R.id.case_battery_bar);
+        leftBatteryText = findViewById(R.id.left_battery_text);
+        rightBatteryText = findViewById(R.id.right_battery_text);
+        caseBatteryText = findViewById(R.id.case_battery_text);
         Button chooseDeviceBtn = findViewById(R.id.choose_device_button);
         Button startServiceBtn = findViewById(R.id.start_service_button);
 
@@ -82,12 +100,19 @@ public class MainActivity extends AppCompatActivity {
 
         if (!connected) {
             statusText.setText("Disconnected");
+            updateBatteryGauge(leftBatteryBar, leftBatteryText, -1, false);
+            updateBatteryGauge(rightBatteryBar, rightBatteryText, -1, false);
+            updateBatteryGauge(caseBatteryBar, caseBatteryText, -1, false);
         } else {
             int l = prefs.getInt(BudsConnectionService.PREF_LEFT, -1);
             int r = prefs.getInt(BudsConnectionService.PREF_RIGHT, -1);
             int c = prefs.getInt(BudsConnectionService.PREF_CASE, -1);
             long caseTs = prefs.getLong(BudsConnectionService.PREF_CASE_TS, 0);
             boolean caseFresh = (System.currentTimeMillis() - caseTs) < 25_000L;
+
+            updateBatteryGauge(leftBatteryBar, leftBatteryText, l, true);
+            updateBatteryGauge(rightBatteryBar, rightBatteryText, r, true);
+            updateBatteryGauge(caseBatteryBar, caseBatteryText, c, caseFresh);
 
             StringBuilder sb = new StringBuilder();
             if (l > 0) sb.append("Left: ").append(l).append("%\n");
@@ -104,6 +129,13 @@ public class MainActivity extends AppCompatActivity {
 
         String rawLog = prefs.getString(BudsConnectionService.PREF_LAST_RAW, "");
         debugText.setText(rawLog.isEmpty() ? "(no data received from buds yet)" : rawLog);
+    }
+
+    private void updateBatteryGauge(ProgressBar bar, TextView label, int value, boolean valid) {
+        if (bar == null || label == null) return;
+        boolean show = valid && value >= 0 && value <= 100;
+        bar.setProgress(show ? value : 0);
+        label.setText(show ? value + "%" : "—");
     }
 
     /** Let the user pick from already-paired Bluetooth devices. */
