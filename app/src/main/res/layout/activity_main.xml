@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="22dp"
+        android:paddingStart="20dp"
         android:paddingTop="16dp"
-        android:paddingEnd="22dp"
+        android:paddingEnd="20dp"
         android:paddingBottom="34dp">
 
         <LinearLayout
@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:text="Devices"
                     android:textColor="?attr/appText"
-                    android:textSize="28sp"
+                    android:textSize="30sp"
                     android:textStyle="normal"
                     android:letterSpacing="-0.02" />
                 <TextView
@@ -49,8 +49,8 @@
 
             <TextView
                 android:id="@+id/settings_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="?attr/appIconBackground"
                 android:gravity="center"
                 android:text="⚙"
@@ -178,7 +178,7 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="108dp"
+                android:layout_height="112dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:background="?attr/appGaugeBackground"
@@ -192,7 +192,7 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="108dp"
+                android:layout_height="112dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:background="?attr/appGaugeBackground"
@@ -206,7 +206,7 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="108dp"
+                android:layout_height="112dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:background="?attr/appGaugeBackground"
@@ -233,7 +233,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="27dp" android:text="Diagnostics" android:textColor="?attr/appText" android:textSize="16sp" android:textStyle="normal" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="27dp" android:text="Diagnostics" android:textColor="?attr/appText" android:textSize="17sp" android:textStyle="normal" />
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:background="?attr/appSurfaceSmall" android:padding="14dp" android:text="Push subscription status" android:textColor="?attr/appTextSoft" android:textSize="12sp" />
         <TextView android:id="@+id/debug_status_text" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="-1dp" android:background="?attr/appSurfaceSmall" android:padding="14dp" android:fontFamily="monospace" android:text="Subscription acknowledged: no&#10;Received a pushed update: no" android:textColor="?attr/appTextFaint" android:textSize="11sp" />

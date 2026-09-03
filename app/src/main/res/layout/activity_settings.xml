@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingBottom="22dp">
+            android:paddingBottom="20dp">
 
             <TextView
                 android:id="@+id/settings_back_button"
@@ -67,13 +67,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/appSurface"
-            android:padding="8dp">
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
             <RadioButton
                 android:id="@+id/theme_liquid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingStart="12dp"
+                android:paddingTop="11dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="11dp"
                 android:text="Liquid Glass"
                 android:textColor="?attr/appText"
                 android:textSize="15sp"
@@ -83,7 +87,10 @@
                 android:id="@+id/theme_classic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingStart="12dp"
+                android:paddingTop="11dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="11dp"
                 android:text="Classic"
                 android:textColor="?attr/appText"
                 android:textSize="15sp"
@@ -103,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="10dp"
-            android:text="Connection"
+            android:text="Connection &amp; Data"
             android:textColor="?attr/appText"
             android:textSize="17sp" />
 
