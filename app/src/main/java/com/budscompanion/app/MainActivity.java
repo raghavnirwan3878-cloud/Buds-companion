@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean detailsScreen = false;
     private boolean receiverRegistered = false;
+    private String appliedTheme;
 
     private final BroadcastReceiver updateReceiver = new BroadcastReceiver() {
         @Override
@@ -56,11 +57,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences themePrefs = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE);
-        if ("classic".equals(themePrefs.getString("theme", "liquid"))) {
-            setTheme(R.style.Theme_BudsCompanion);
-        } else {
-            setTheme(R.style.Theme_BudsCompanion);
-        }
+        appliedTheme = themePrefs.getString("theme", "liquid");
+        setTheme("classic".equals(appliedTheme)
+                ? R.style.Theme_BudsCompanionClassic
+                : R.style.Theme_BudsCompanion);
 
         super.onCreate(savedInstanceState);
         showDevicesScreen();
@@ -69,6 +69,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        String currentTheme = getSharedPreferences(BudsConnectionService.PREFS, MODE_PRIVATE)
+                .getString("theme", "liquid");
+        if (appliedTheme != null && !appliedTheme.equals(currentTheme)) {
+            appliedTheme = currentTheme;
+            recreate();
+            return;
+        }
         if (!receiverRegistered) {
             registerReceiver(updateReceiver,
                     new IntentFilter(BudsConnectionService.ACTION_LEVELS_UPDATED),
@@ -100,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         View settingsButton = findViewById(R.id.settings_button);
         if (settingsButton != null) {
             settingsButton.setOnClickListener(v ->
-                    Toast.makeText(this, "Settings will be added in the next stage", Toast.LENGTH_SHORT).show());
+                    startActivity(new Intent(this, SettingsActivity.class)));
         }
 
         Button chooseDeviceBtn = findViewById(R.id.choose_device_button);
