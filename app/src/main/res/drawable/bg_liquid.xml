@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape>
-            <gradient android:type="linear" android:angle="135" android:startColor="#1A1D33" android:centerColor="#111426" android:endColor="#0B0D17" />
-        </shape>
-    </item>
-    <item android:top="-180dp" android:left="-100dp">
-        <shape android:shape="oval">
-            <gradient android:type="radial" android:gradientRadius="280dp" android:startColor="#7C9CFF80" android:endColor="#007C9CFF" />
-        </shape>
-    </item>
-    <item android:top="-80dp" android:right="-140dp">
-        <shape android:shape="oval">
-            <gradient android:type="radial" android:gradientRadius="250dp" android:startColor="#FF8AD866" android:endColor="#00FF8AD8" />
-        </shape>
-    </item>
-    <item android:bottom="-180dp" android:right="-120dp">
-        <shape android:shape="oval">
-            <gradient android:type="radial" android:gradientRadius="300dp" android:startColor="#5EEAD499" android:endColor="#005EEAD4" />
-        </shape>
-    </item>
+    <item><shape><gradient android:type="linear" android:angle="135" android:startColor="#111520" android:centerColor="#0D111B" android:endColor="#080B13" /></shape></item>
+    <item android:top="-210dp" android:left="-150dp"><shape android:shape="oval"><gradient android:type="radial" android:gradientRadius="300dp" android:startColor="#657CFF35" android:endColor="#00657CFF" /></shape></item>
+    <item android:top="-80dp" android:right="-180dp"><shape android:shape="oval"><gradient android:type="radial" android:gradientRadius="270dp" android:startColor="#5AC99B20" android:endColor="#005AC99B" /></shape></item>
+    <item android:bottom="-240dp" android:right="-170dp"><shape android:shape="oval"><gradient android:type="radial" android:gradientRadius="330dp" android:startColor="#77D96B3A" android:endColor="#0077D96B" /></shape></item>
 </layer-list>
