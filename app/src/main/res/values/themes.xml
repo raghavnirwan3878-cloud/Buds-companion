@@ -4,8 +4,11 @@
         <item name="android:fontFamily">sans</item>
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:colorAccent">@color/liquid_primary</item>
-        <item name="android:navigationBarColor">#090D16</item>
-        <item name="android:statusBarColor">#090D16</item>
+        <item name="android:windowBackground">@drawable/bg_liquid</item>
+        <item name="android:statusBarColor">#0B0E17</item>
+        <item name="android:navigationBarColor">#0B0E17</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 </resources>
