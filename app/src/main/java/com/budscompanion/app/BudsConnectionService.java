@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -96,7 +97,9 @@ public class BudsConnectionService extends Service {
     private BluetoothSocket socket;
     private OutputStream outStream;
     private volatile boolean running = false;
-    private volatile boolean dataReceivingEnabled = true;
+    private volatile boolean dataReceivingEnabled = false;
+    /** True when the selected Bluetooth link is allowed to be used. */
+    private volatile boolean connectionAllowed = true;
     private volatile boolean gotFirstReading = false;
     private long reconnectDelay = RECONNECT_BASE_DELAY_MS;
 
@@ -118,6 +121,7 @@ public class BudsConnectionService extends Service {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 dataReceivingEnabled = false;
+                connectionAllowed = false;
                 getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                         .putBoolean(PREF_DATA_RECEIVING, false)
                         .apply();
@@ -125,10 +129,13 @@ public class BudsConnectionService extends Service {
                 markDisconnected();
                 closeSocketQuietly();
             } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                dataReceivingEnabled = true;
+                connectionAllowed = true;
                 reconnectDelay = RECONNECT_BASE_DELAY_MS;
+                // The RFCOMM data channel becomes active only after the
+                // socket connection succeeds in attemptConnect().
+                dataReceivingEnabled = false;
                 getSharedPreferences(PREFS, MODE_PRIVATE).edit()
-                        .putBoolean(PREF_DATA_RECEIVING, true)
+                        .putBoolean(PREF_DATA_RECEIVING, false)
                         .apply();
                 broadcastUpdate();
             }
@@ -161,10 +168,11 @@ public class BudsConnectionService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(NOTIF_ID_STATUS, buildStatusNotification("Starting\u2026"));
         running = true;
-        dataReceivingEnabled = true;
+        dataReceivingEnabled = false;
+        connectionAllowed = true;
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
                 .putBoolean(PREF_MONITORING_ENABLED, true)
-                .putBoolean(PREF_DATA_RECEIVING, true)
+                .putBoolean(PREF_DATA_RECEIVING, false)
                 .apply();
         connectLoop();
         return START_STICKY;
@@ -197,7 +205,7 @@ public class BudsConnectionService extends Service {
     private void connectLoop() {
         new Thread(() -> {
             while (running) {
-                if (!dataReceivingEnabled) {
+                if (!connectionAllowed) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException ignored) {
@@ -221,7 +229,7 @@ public class BudsConnectionService extends Service {
                 if (!running) {
                     return;
                 }
-                if (!dataReceivingEnabled) {
+                if (!connectionAllowed) {
                     continue;
                 }
                 try {
@@ -267,6 +275,7 @@ public class BudsConnectionService extends Service {
 
         Log.i(TAG, "Connected to " + mac);
         gotFirstReading = false;
+        dataReceivingEnabled = true;
         prefs.edit()
                 .putBoolean(PREF_CONNECTED, true)
                 .putBoolean(PREF_DATA_RECEIVING, true)
@@ -385,9 +394,11 @@ public class BudsConnectionService extends Service {
     }
 
     private void markDisconnected() {
+        dataReceivingEnabled = false;
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         prefs.edit()
                 .putBoolean(PREF_CONNECTED, false)
+                .putBoolean(PREF_DATA_RECEIVING, false)
                 // Clear stale readings outright - a percentage from before a
                 // disconnect is not "current" and shouldn't linger on screen.
                 .putInt(PREF_LEFT, -1)
