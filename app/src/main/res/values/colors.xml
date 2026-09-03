@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="glass_bg">#24FFFFFF</color>
+    <color name="glass_bg_strong">#36FFFFFF</color>
+    <color name="glass_border">#61FFFFFF</color>
+    <color name="liquid_primary">#7C9CFF</color>
+    <color name="liquid_primary_strong">#4C6EF5</color>
+    <color name="liquid_warn">#FFC876</color>
+    <color name="liquid_danger">#FF8A8A</color>
+    <color name="liquid_text">#FFFFFFFF</color>
+    <color name="liquid_text_soft">#B0FFFFFF</color>
+    <color name="liquid_text_faint">#73FFFFFF</color>
+    <color name="classic_bg">#EAEBF1</color>
+    <color name="classic_surface">#FFFFFFFF</color>
+    <color name="classic_sunken">#F1F2F7</color>
+    <color name="classic_text">#14151A</color>
+    <color name="classic_text_soft">#6B6F7A</color>
+    <color name="classic_line">#E4E6ED</color>
+</resources>
