@@ -31,8 +31,14 @@ public class OppoProtocol {
     public static final short CMD_SUBSCRIPTION_RET = 0x0204;
     public static final short CMD_FIRMWARE_GET = 0x0105;
     public static final short CMD_FIRMWARE_RET = (short) 0x8105;
-    public static final short CMD_FIND_DEVICE_REQ = 0x0400;
-    public static final short CMD_FIND_DEVICE_ACK = (short) 0x8400;
+    public static final short CMD_FIND_DEVICE_REQ  = 0x0400;
+    public static final short CMD_FIND_DEVICE_ACK  = (short) 0x8400;
+    public static final short CMD_TOUCH_CONFIG_SET = 0x0401;
+    public static final short CMD_TOUCH_CONFIG_ACK = (short) 0x8401;
+    public static final short CMD_MISC_CONFIG_SET  = 0x0403;
+    public static final short CMD_MISC_CONFIG_ACK  = (short) 0x8403;
+    public static final short CMD_ANC_CONFIG_SET   = 0x0404;
+    public static final short CMD_ANC_CONFIG_ACK   = (short) 0x8404;
 
     // Subscription types (from SubscriptionType.java)
     public static final int SUB_BATTERY = 0x01;
@@ -88,6 +94,62 @@ public class OppoProtocol {
     /** Make the buds play a "find me" sound. Pass false to stop it early. */
     public byte[] encodeFindDevice(boolean start) {
         return encodeMessage(CMD_FIND_DEVICE_REQ, new byte[]{(byte) (start ? 0x01 : 0x00)});
+    }
+
+    /** Convenience overload — starts the find-device beep. Called from UI. */
+    public byte[] encodeFindDevice() {
+        return encodeFindDevice(true);
+    }
+
+    /**
+     * Encode ANC mode set packet.
+     * @param mode "Off", "ANC", or "Transparency"
+     */
+    public byte[] encodeAncMode(String mode) {
+        byte val;
+        if ("ANC".equals(mode))               val = 0x01;
+        else if ("Transparency".equals(mode)) val = 0x02;
+        else                                   val = 0x00; // Off
+        return encodeMessage(CMD_ANC_CONFIG_SET, new byte[]{val});
+    }
+
+    /**
+     * Encode Game Mode enable/disable (MiscConfig type 0x03).
+     */
+    public byte[] encodeGameMode(boolean enabled) {
+        // payload: [miscConfigType, value]
+        return encodeMessage(CMD_MISC_CONFIG_SET,
+                new byte[]{0x03, (byte) (enabled ? 0x01 : 0x00)});
+    }
+
+    /**
+     * Encode a single touch-config mapping.
+     * @param side    "left" or "right"
+     * @param gesture "double", "triple", or "hold"
+     * @param action  display string matching ButtonSettingsFragment.ACTIONS[]
+     */
+    public byte[] encodeTouchConfig(String side, String gesture, String action) {
+        byte sideByte    = "left".equals(side) ? (byte) 0x01 : (byte) 0x02;
+        byte gestureByte;
+        switch (gesture) {
+            case "triple": gestureByte = 0x02; break;
+            case "hold":   gestureByte = 0x03; break;
+            default:       gestureByte = 0x01; break; // double tap
+        }
+        byte actionByte;
+        switch (action) {
+            case "Play / Pause":   actionByte = 0x01; break;
+            case "Next track":     actionByte = 0x02; break;
+            case "Previous track": actionByte = 0x03; break;
+            case "Volume up":      actionByte = 0x04; break;
+            case "Volume down":    actionByte = 0x05; break;
+            case "Noise control":  actionByte = 0x06; break;
+            case "Game mode":      actionByte = 0x07; break;
+            default:               actionByte = 0x00; break; // None
+        }
+        // payload: [side, gestureHi, gestureLo, value]
+        return encodeMessage(CMD_TOUCH_CONFIG_SET,
+                new byte[]{sideByte, 0x00, gestureByte, actionByte});
     }
 
     private byte[] encodeMessage(short command, byte[] payload) {
