@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="BatteryTickView">
+        <!-- Number of tick segments in the arc (default 20) -->
+        <attr name="tickCount" format="integer"/>
+        <!-- Color of filled (charged) ticks -->
+        <attr name="tickColor" format="color"/>
+        <!-- Color of empty ticks -->
+        <attr name="emptyColor" format="color"/>
+        <!-- Stroke width of each tick in dp (default 3dp) -->
+        <attr name="tickThickness" format="dimension"/>
+    </declare-styleable>
+
+</resources>

@@ -1,12 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.BudsCompanion" parent="Theme.Material3.DayNight">
-        <item name="colorPrimary">@color/md_primary</item>
-        <item name="colorOnPrimary">@color/md_on_primary</item>
-        <item name="colorPrimaryContainer">@color/md_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/md_on_primary_container</item>
-        <item name="colorSecondary">@color/md_secondary</item>
-        <item name="android:statusBarColor">?attr/colorPrimary</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+<resources>
+
+    <!-- ===================== BASE ===================== -->
+    <style name="Theme.BudsCompanion.Base" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:windowBackground">@color/bg_primary</item>
+        <item name="android:statusBarColor">@color/bg_primary</item>
+        <item name="android:navigationBarColor">@color/bg_primary</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <!-- ===================== CLASSIC ===================== -->
+    <!--
+        Solid dark Material 3.
+        Applied when prefs "theme" = "classic" (default).
+    -->
+    <style name="Theme.BudsCompanion" parent="Theme.BudsCompanion.Base">
+        <!-- Classic uses the default color tokens above — no overrides needed -->
+    </style>
+
+    <!-- ===================== LIQUID GLASS ===================== -->
+    <!--
+        Deep dark background with translucent frosted cards.
+        Applied when prefs "theme" = "liquid".
+        Cards use glass_surface + backdrop blur via LiquidCardView (see Java).
+    -->
+    <style name="Theme.BudsCompanion.LiquidGlass" parent="Theme.BudsCompanion.Base">
+        <item name="colorSurface">@color/glass_surface</item>
+        <item name="colorOnSurface">@color/glass_text_primary</item>
+        <item name="android:windowBackground">@color/glass_bg_primary</item>
+        <item name="android:statusBarColor">@color/glass_bg_primary</item>
+        <item name="android:navigationBarColor">@color/glass_bg_primary</item>
+    </style>
+
+    <!-- Text appearance overrides -->
+    <style name="TextAppearance.Buds.Headline" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+    </style>
+
+    <style name="TextAppearance.Buds.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.Buds.Caption" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
 </resources>

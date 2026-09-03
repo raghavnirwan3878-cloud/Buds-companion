@@ -1,4 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Devices</string>
+
+    <!-- First launch -->
+    <string name="no_buds_headline">No buds connected</string>
+    <string name="no_buds_sub">Pair your Realme earbuds to get battery, touch controls and more.</string>
+    <string name="btn_pair_device">Pair device</string>
+
+    <!-- Device list -->
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+
+    <!-- Battery slots -->
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="case_label">Case</string>
+    <string name="unknown_level">–</string>
+
+    <!-- Device detail -->
+    <string name="find_my_buds">Find my buds</string>
+    <string name="noise_control">Noise control</string>
+    <string name="game_mode">Game mode</string>
+    <string name="button_settings">Button settings</string>
+    <string name="device_details">Device details</string>
+
+    <!-- ANC modes -->
+    <string name="anc_off">Off</string>
+    <string name="anc_on">ANC</string>
+    <string name="anc_transparency">Transparency</string>
+
+    <!-- Button settings -->
+    <string name="left_side">LEFT</string>
+    <string name="right_side">RIGHT</string>
+    <string name="double_tap">Double tap</string>
+    <string name="triple_tap">Triple tap</string>
+    <string name="hold">Hold</string>
+    <string name="btn_save">Save</string>
+
+    <!-- Device info -->
+    <string name="info_name">Name</string>
+    <string name="info_mac">Bluetooth address</string>
+    <string name="info_firmware">Firmware</string>
+    <string name="btn_unpair">Unpair device</string>
+    <string name="unpair_title">Unpair device</string>
+    <string name="unpair_message">This will forget the device. You can re-pair any time.</string>
+
+    <!-- Settings -->
+    <string name="section_notifications">NOTIFICATIONS</string>
+    <string name="notif_connection">Connection status</string>
+    <string name="notif_low_battery">Low battery alerts</string>
+    <string name="alert_threshold">Alert threshold</string>
+    <string name="section_appearance">APPEARANCE</string>
+    <string name="theme_label">Theme</string>
+    <string name="theme_classic">Classic</string>
+    <string name="theme_liquid">Liquid Glass</string>
+    <string name="accent_color">Accent color</string>
 </resources>

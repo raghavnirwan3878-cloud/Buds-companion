@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="md_primary">#4C6EF5</color>
-    <color name="md_on_primary">#FFFFFF</color>
-    <color name="md_primary_container">#DCE1FF</color>
-    <color name="md_on_primary_container">#00174C</color>
-    <color name="md_secondary">#5B5D72</color>
-    <color name="md_background">#FDFBFF</color>
-    <color name="md_surface">#FDFBFF</color>
-    <color name="md_on_surface">#1B1B1F</color>
+
+    <!-- Brand / accent -->
+    <color name="accent">#3098AC</color>
+    <color name="accent_dark">#1E7A8C</color>
+
+    <!-- Classic theme (dark Material 3) -->
+    <color name="bg_primary">#1B1B1F</color>
+    <color name="surface">#26262A</color>
+    <color name="surface_stroke">#38383C</color>
+    <color name="text_primary">#E8E8EC</color>
+    <color name="text_secondary">#8C8C90</color>
+
+    <!-- Liquid Glass theme overrides (applied via theme overlay) -->
+    <color name="glass_bg_primary">#0D0D12</color>
+    <color name="glass_surface">#1A1A2280</color>   <!-- 50% alpha -->
+    <color name="glass_stroke">#FFFFFF18</color>
+    <color name="glass_text_primary">#F0F0F8</color>
+    <color name="glass_text_secondary">#80808A</color>
+
+    <!-- Semantic -->
+    <color name="error">#CF6679</color>
+    <color name="warning">#E8A030</color>
+    <color name="success">#4CAF7D</color>
+
+    <!-- Notification channel colors -->
+    <color name="notif_color">#3098AC</color>
+
 </resources>
