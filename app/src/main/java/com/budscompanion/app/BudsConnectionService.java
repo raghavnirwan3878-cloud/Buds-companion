@@ -70,7 +70,15 @@ public class BudsConnectionService extends Service {
     public static final String PREF_SUBSCRIPTION_ACKED = "subscription_acked";
     public static final String PREF_GOT_PUSH_UPDATE = "got_push_update";
     public static final String PREF_MONITORING_ENABLED = "monitoring_enabled";
-    public static final String ACTION_LEVELS_UPDATED = "com.budscompanion.app.LEVELS_UPDATED";
+    public static final String ACTION_LEVELS_UPDATED    = "com.budscompanion.app.LEVELS_UPDATED";
+
+    // Actions sent from the UI fragments to trigger protocol commands
+    public static final String ACTION_FIND_DEVICE      = "com.budscompanion.FIND_DEVICE";
+    public static final String ACTION_SET_ANC          = "com.budscompanion.SET_ANC";
+    public static final String ACTION_SET_GAME_MODE    = "com.budscompanion.SET_GAME_MODE";
+    public static final String ACTION_SET_TOUCH_CONFIG = "com.budscompanion.SET_TOUCH_CONFIG";
+    public static final String EXTRA_ANC_MODE          = "anc_mode";
+    public static final String EXTRA_GAME_MODE         = "game_mode";
 
     // Case battery is only considered "current" if we heard about it within
     // this window; older than that, we treat the case as closed/out of range
@@ -119,6 +127,27 @@ public class BudsConnectionService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // Handle command actions fired from UI fragments (service may already be running)
+        if (intent != null && intent.getAction() != null) {
+            switch (intent.getAction()) {
+                case ACTION_FIND_DEVICE:
+                    safeSend(protocol.encodeFindDevice());
+                    return START_STICKY;
+                case ACTION_SET_ANC:
+                    String ancMode = intent.getStringExtra(EXTRA_ANC_MODE);
+                    safeSend(protocol.encodeAncMode(ancMode));
+                    return START_STICKY;
+                case ACTION_SET_GAME_MODE:
+                    boolean gameModeOn = intent.getBooleanExtra(EXTRA_GAME_MODE, false);
+                    safeSend(protocol.encodeGameMode(gameModeOn));
+                    return START_STICKY;
+                case ACTION_SET_TOUCH_CONFIG:
+                    sendTouchConfigFromPrefs();
+                    return START_STICKY;
+            }
+        }
+
+        // Normal start — launch the connection loop
         startForeground(NOTIF_ID_STATUS, buildStatusNotification("Starting\u2026"));
         running = true;
         getSharedPreferences(PREFS, MODE_PRIVATE).edit()
@@ -128,6 +157,39 @@ public class BudsConnectionService extends Service {
         // INITIAL_SETTLE_DELAY_MS above for why.
         handler.postDelayed(this::connectLoop, INITIAL_SETTLE_DELAY_MS);
         return START_STICKY;
+    }
+
+    /**
+     * Sends a command packet if currently connected; silently drops it if not.
+     * Safe to call from any thread.
+     */
+    private void safeSend(byte[] packet) {
+        if (packet == null) return;
+        try {
+            write(packet);
+        } catch (IOException e) {
+            Log.w(TAG, "safeSend failed (not connected?): " + e.getMessage());
+        }
+    }
+
+    /**
+     * Reads the saved touch-config mappings from SharedPreferences and sends
+     * a TOUCH_CONFIG_SET packet for each side/gesture combo that is non-None.
+     */
+    private void sendTouchConfigFromPrefs() {
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        String[] sides    = {"left", "right"};
+        String[] gestures = {"double", "triple", "hold"};
+
+        for (String side : sides) {
+            for (String gesture : gestures) {
+                String key    = "touch_" + side + "_" + gesture;
+                String action = prefs.getString(key, "None");
+                if ("None".equals(action)) continue;
+                byte[] packet = protocol.encodeTouchConfig(side, gesture, action);
+                safeSend(packet);
+            }
+        }
     }
 
     @Override
@@ -435,7 +497,7 @@ public class BudsConnectionService extends Service {
 
     private Notification buildStatusNotification(String text) {
         PendingIntent openApp = PendingIntent.getActivity(
-                this, 0, new Intent(this, MainActivity.class),
+                this, 0, new Intent(this, HomeActivity.class),
                 PendingIntent.FLAG_IMMUTABLE);
 
         return new NotificationCompat.Builder(this, CHANNEL_STATUS)
