@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/firstLaunchFragment">
+
+    <!-- Screen 1: First launch / empty state -->
+    <fragment
+        android:id="@+id/firstLaunchFragment"
+        android:name="com.budscompanion.app.FirstLaunchFragment"
+        android:label="Devices">
+
+        <action
+            android:id="@+id/action_firstLaunch_to_deviceList"
+            app:destination="@id/deviceListFragment"
+            app:popUpTo="@id/firstLaunchFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"/>
+
+    </fragment>
+
+    <!-- Screen 2: Device list -->
+    <fragment
+        android:id="@+id/deviceListFragment"
+        android:name="com.budscompanion.app.DeviceListFragment"
+        android:label="Devices">
+
+        <action
+            android:id="@+id/action_deviceList_to_deviceDetail"
+            app:destination="@id/deviceDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
+        <action
+            android:id="@+id/action_deviceList_to_settings"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
+        <action
+            android:id="@+id/action_deviceList_to_firstLaunch"
+            app:destination="@id/firstLaunchFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
+    </fragment>
+
+    <!-- Screen 3: Device detail -->
+    <fragment
+        android:id="@+id/deviceDetailFragment"
+        android:name="com.budscompanion.app.DeviceDetailFragment"
+        android:label="Device">
+
+        <action
+            android:id="@+id/action_deviceDetail_to_buttonSettings"
+            app:destination="@id/buttonSettingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
+        <action
+            android:id="@+id/action_deviceDetail_to_deviceInfo"
+            app:destination="@id/deviceInfoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
+    </fragment>
+
+    <!-- Screen 4: Button settings -->
+    <fragment
+        android:id="@+id/buttonSettingsFragment"
+        android:name="com.budscompanion.app.ButtonSettingsFragment"
+        android:label="Button settings"/>
+
+    <!-- Screen 5: Device info -->
+    <fragment
+        android:id="@+id/deviceInfoFragment"
+        android:name="com.budscompanion.app.DeviceInfoFragment"
+        android:label="Device details">
+
+        <action
+            android:id="@+id/action_deviceInfo_to_firstLaunch"
+            app:destination="@id/firstLaunchFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"/>
+
+    </fragment>
+
+    <!-- Screen 6: Settings -->
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.budscompanion.app.SettingsFragment"
+        android:label="Settings"/>
+
+</navigation>
