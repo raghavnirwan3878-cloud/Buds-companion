@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@drawable/bg_liquid"
+    android:background="?attr/appBackground"
     android:clipToPadding="false"
     android:overScrollMode="never">
 
@@ -28,11 +28,11 @@
                 android:id="@+id/back_button"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/bg_glass_icon"
+                android:background="?attr/appIconBackground"
                 android:contentDescription="Back"
                 android:gravity="center"
                 android:text="‹"
-                android:textColor="@color/liquid_text"
+                android:textColor="?attr/appText"
                 android:textSize="34sp" />
 
             <LinearLayout
@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Device details"
-                    android:textColor="@color/liquid_text"
+                    android:textColor="?attr/appText"
                     android:textSize="27sp"
                     android:letterSpacing="-0.02" />
 
@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="No device selected"
-                    android:textColor="@color/liquid_text_soft"
+                    android:textColor="?attr/appText_soft"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
@@ -64,7 +64,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_glass"
+            android:background="?attr/appSurface"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="18dp">
@@ -79,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Earbuds"
-                    android:textColor="@color/liquid_text"
+                    android:textColor="?attr/appText"
                     android:textSize="20sp" />
 
                 <TextView
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:text="Disconnected"
-                    android:textColor="@color/liquid_text_soft"
+                    android:textColor="?attr/appText_soft"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -96,13 +96,13 @@
                 android:id="@+id/detail_data_receiving_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_glass_small"
+                android:background="?attr/appSurfaceSmall"
                 android:paddingStart="11dp"
                 android:paddingTop="7dp"
                 android:paddingEnd="11dp"
                 android:paddingBottom="7dp"
                 android:text="OFF"
-                android:textColor="@color/liquid_text_faint"
+                android:textColor="?attr/appText_faint"
                 android:textSize="10sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -113,7 +113,7 @@
             android:layout_marginTop="26dp"
             android:layout_marginBottom="10dp"
             android:text="Battery"
-            android:textColor="@color/liquid_text"
+            android:textColor="?attr/appText"
             android:textSize="17sp" />
 
         <LinearLayout
@@ -125,12 +125,12 @@
                 android:layout_width="0dp"
                 android:layout_height="118dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_gauge"
+                android:background="?attr/appGaugeBackground"
                 android:orientation="vertical"
                 android:padding="13dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="LEFT" android:textColor="@color/liquid_text_faint" android:textSize="10sp" android:textStyle="bold" />
-                <ProgressBar android:id="@+id/detail_left_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="12dp" android:max="100" android:progress="0" android:progressDrawable="@drawable/progress_liquid" />
-                <TextView android:id="@+id/detail_left_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="—" android:textColor="@color/liquid_text" android:textSize="18sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="LEFT" android:textColor="?attr/appText_faint" android:textSize="10sp" android:textStyle="bold" />
+                <ProgressBar android:id="@+id/detail_left_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="12dp" android:max="100" android:progress="0" android:progressDrawable="?attr/appProgressDrawable" />
+                <TextView android:id="@+id/detail_left_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="—" android:textColor="?attr/appText" android:textSize="18sp" />
             </LinearLayout>
 
             <Space android:layout_width="9dp" android:layout_height="1dp" />
@@ -139,12 +139,12 @@
                 android:layout_width="0dp"
                 android:layout_height="118dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_gauge"
+                android:background="?attr/appGaugeBackground"
                 android:orientation="vertical"
                 android:padding="13dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RIGHT" android:textColor="@color/liquid_text_faint" android:textSize="10sp" android:textStyle="bold" />
-                <ProgressBar android:id="@+id/detail_right_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="12dp" android:max="100" android:progress="0" android:progressDrawable="@drawable/progress_liquid" />
-                <TextView android:id="@+id/detail_right_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="—" android:textColor="@color/liquid_text" android:textSize="18sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RIGHT" android:textColor="?attr/appText_faint" android:textSize="10sp" android:textStyle="bold" />
+                <ProgressBar android:id="@+id/detail_right_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="12dp" android:max="100" android:progress="0" android:progressDrawable="?attr/appProgressDrawable" />
+                <TextView android:id="@+id/detail_right_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="—" android:textColor="?attr/appText" android:textSize="18sp" />
             </LinearLayout>
 
             <Space android:layout_width="9dp" android:layout_height="1dp" />
@@ -153,12 +153,12 @@
                 android:layout_width="0dp"
                 android:layout_height="118dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_gauge"
+                android:background="?attr/appGaugeBackground"
                 android:orientation="vertical"
                 android:padding="13dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CASE" android:textColor="@color/liquid_text_faint" android:textSize="10sp" android:textStyle="bold" />
-                <ProgressBar android:id="@+id/detail_case_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="12dp" android:max="100" android:progress="0" android:progressDrawable="@drawable/progress_liquid" />
-                <TextView android:id="@+id/detail_case_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="—" android:textColor="@color/liquid_text" android:textSize="18sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CASE" android:textColor="?attr/appText_faint" android:textSize="10sp" android:textStyle="bold" />
+                <ProgressBar android:id="@+id/detail_case_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="12dp" android:max="100" android:progress="0" android:progressDrawable="?attr/appProgressDrawable" />
+                <TextView android:id="@+id/detail_case_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="—" android:textColor="?attr/appText" android:textSize="18sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -167,40 +167,40 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:text="Features"
-            android:textColor="@color/liquid_text"
+            android:textColor="?attr/appText"
             android:textSize="17sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_glass"
+            android:background="?attr/appSurface"
             android:orientation="vertical"
             android:padding="17dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Find my earbuds" android:textColor="@color/liquid_text" android:textSize="15sp" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Play a sound when protocol support is available" android:textColor="@color/liquid_text_faint" android:textSize="11sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Find my earbuds" android:textColor="?attr/appText" android:textSize="15sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Play a sound when protocol support is available" android:textColor="?attr/appText_faint" android:textSize="11sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_glass"
+            android:background="?attr/appSurface"
             android:orientation="vertical"
             android:padding="17dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sound effects" android:textColor="@color/liquid_text" android:textSize="15sp" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Audio controls will be added after the device controls are mapped" android:textColor="@color/liquid_text_faint" android:textSize="11sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sound effects" android:textColor="?attr/appText" android:textSize="15sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Audio controls will be added after the device controls are mapped" android:textColor="?attr/appText_faint" android:textSize="11sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_glass"
+            android:background="?attr/appSurface"
             android:orientation="vertical"
             android:padding="17dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Game mode" android:textColor="@color/liquid_text" android:textSize="15sp" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Low-latency control will be added with protocol support" android:textColor="@color/liquid_text_faint" android:textSize="11sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Game mode" android:textColor="?attr/appText" android:textSize="15sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Low-latency control will be added with protocol support" android:textColor="?attr/appText_faint" android:textSize="11sp" />
         </LinearLayout>
 
         <TextView
@@ -208,7 +208,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:text="Device information"
-            android:textColor="@color/liquid_text"
+            android:textColor="?attr/appText"
             android:textSize="17sp" />
 
         <TextView
@@ -216,11 +216,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_glass_small"
+            android:background="?attr/appSurfaceSmall"
             android:fontFamily="monospace"
             android:padding="15dp"
             android:text="No device selected"
-            android:textColor="@color/liquid_text_faint"
+            android:textColor="?attr/appText_faint"
             android:textSize="11sp" />
 
     </LinearLayout>

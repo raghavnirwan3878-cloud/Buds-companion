@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/appBackground"
+    android:overScrollMode="never">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="22dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="34dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingBottom="22dp">
+
+            <TextView
+                android:id="@+id/settings_back_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/appIconBackground"
+                android:contentDescription="Back"
+                android:gravity="center"
+                android:text="‹"
+                android:textColor="?attr/appText"
+                android:textSize="34sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Settings"
+                    android:textColor="?attr/appText"
+                    android:textSize="28sp"
+                    android:letterSpacing="-0.02" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Appearance and app behavior"
+                    android:textColor="?attr/appTextSoft"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Appearance"
+            android:textColor="?attr/appText"
+            android:textSize="17sp" />
+
+        <RadioGroup
+            android:id="@+id/theme_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/appSurface"
+            android:padding="8dp">
+
+            <RadioButton
+                android:id="@+id/theme_liquid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Liquid Glass"
+                android:textColor="?attr/appText"
+                android:textSize="15sp"
+                android:buttonTint="?attr/appAccent" />
+
+            <RadioButton
+                android:id="@+id/theme_classic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Classic"
+                android:textColor="?attr/appText"
+                android:textSize="15sp"
+                android:buttonTint="?attr/appAccent" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Liquid Glass uses translucent surfaces and the current glass styling. Classic uses a clean solid interface."
+            android:textColor="?attr/appTextFaint"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="10dp"
+            android:text="Connection"
+            android:textColor="?attr/appText"
+            android:textSize="17sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/appSurface"
+            android:orientation="vertical"
+            android:padding="17dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Data receiving"
+                android:textColor="?attr/appText"
+                android:textSize="15sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Automatically follows the earbuds connection. It turns off when disconnected and resumes after reconnecting."
+                android:textColor="?attr/appTextFaint"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/settings_version_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Buds Companion v1.4"
+            android:textColor="?attr/appTextFaint"
+            android:textSize="11sp" />
+    </LinearLayout>
+</ScrollView>

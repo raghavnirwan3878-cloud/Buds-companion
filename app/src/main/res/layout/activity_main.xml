@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@drawable/bg_liquid"
+    android:background="?attr/appBackground"
     android:clipToPadding="false"
     android:overScrollMode="never">
 
@@ -33,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Devices"
-                    android:textColor="@color/liquid_text"
+                    android:textColor="?attr/appText"
                     android:textSize="28sp"
                     android:textStyle="normal"
                     android:letterSpacing="-0.02" />
@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="No device selected yet"
-                    android:textColor="@color/liquid_text_soft"
+                    android:textColor="?attr/appText_soft"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -51,10 +51,10 @@
                 android:id="@+id/settings_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/bg_glass_icon"
+                android:background="?attr/appIconBackground"
                 android:gravity="center"
                 android:text="⚙"
-                android:textColor="@color/liquid_text"
+                android:textColor="?attr/appText"
                 android:textSize="21sp"
                 android:contentDescription="Settings" />
         </LinearLayout>
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_glass"
+            android:background="?attr/appSurface"
             android:padding="18dp">
 
             <LinearLayout
@@ -75,7 +75,7 @@
                 <FrameLayout
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    android:background="@drawable/bg_dark_icon">
+                    android:background="?attr/appIconBackground">
                     <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
@@ -94,7 +94,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Earbuds"
-                        android:textColor="@color/liquid_text"
+                        android:textColor="?attr/appText"
                         android:textSize="20sp"
                         android:textStyle="normal" />
                     <TextView
@@ -103,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:text="Disconnected"
-                        android:textColor="@color/liquid_text_soft"
+                        android:textColor="?attr/appText_soft"
                         android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -121,9 +121,9 @@
                     android:layout_weight="1"
                     android:text="Pair device"
                     android:textAllCaps="false"
-                    android:textColor="@color/liquid_text"
+                    android:textColor="?attr/appText"
                     android:textSize="14sp"
-                    android:background="@drawable/bg_primary_pill"
+                    android:background="?attr/appPrimaryButton"
                     android:minHeight="0dp"
                     android:minWidth="0dp"
                     android:paddingStart="8dp"
@@ -142,9 +142,9 @@
                     android:textAllCaps="false"
                     android:singleLine="true"
                     android:ellipsize="end"
-                    android:textColor="@color/liquid_text"
+                    android:textColor="?attr/appText"
                     android:textSize="13sp"
-                    android:background="@drawable/bg_glass_button"
+                    android:background="?attr/appSurface_button"
                     android:minHeight="0dp"
                     android:minWidth="0dp"
                     android:paddingStart="4dp"
@@ -158,7 +158,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Data receiving: OFF"
-            android:textColor="@color/liquid_text_faint"
+            android:textColor="?attr/appText_faint"
             android:textSize="11sp" />
 
         <TextView
@@ -167,7 +167,7 @@
             android:layout_marginTop="25dp"
             android:layout_marginBottom="10dp"
             android:text="Battery"
-            android:textColor="@color/liquid_text"
+            android:textColor="?attr/appText"
             android:textSize="16sp"
             android:textStyle="normal" />
 
@@ -181,11 +181,11 @@
                 android:layout_height="108dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:background="@drawable/bg_gauge"
+                android:background="?attr/appGaugeBackground"
                 android:padding="13dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="LEFT" android:textColor="@color/liquid_text_faint" android:textSize="10sp" android:textStyle="bold" />
-                <ProgressBar android:id="@+id/left_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="11dp" android:max="100" android:progress="0" android:progressDrawable="@drawable/progress_liquid" />
-                <TextView android:id="@+id/left_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="—" android:textColor="@color/liquid_text" android:textSize="16sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="LEFT" android:textColor="?attr/appText_faint" android:textSize="10sp" android:textStyle="bold" />
+                <ProgressBar android:id="@+id/left_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="11dp" android:max="100" android:progress="0" android:progressDrawable="?attr/appProgressDrawable" />
+                <TextView android:id="@+id/left_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="—" android:textColor="?attr/appText" android:textSize="16sp" />
             </LinearLayout>
 
             <Space android:layout_width="9dp" android:layout_height="1dp" />
@@ -195,11 +195,11 @@
                 android:layout_height="108dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:background="@drawable/bg_gauge"
+                android:background="?attr/appGaugeBackground"
                 android:padding="13dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RIGHT" android:textColor="@color/liquid_text_faint" android:textSize="10sp" android:textStyle="bold" />
-                <ProgressBar android:id="@+id/right_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="11dp" android:max="100" android:progress="0" android:progressDrawable="@drawable/progress_liquid" />
-                <TextView android:id="@+id/right_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="—" android:textColor="@color/liquid_text" android:textSize="16sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RIGHT" android:textColor="?attr/appText_faint" android:textSize="10sp" android:textStyle="bold" />
+                <ProgressBar android:id="@+id/right_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="11dp" android:max="100" android:progress="0" android:progressDrawable="?attr/appProgressDrawable" />
+                <TextView android:id="@+id/right_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="—" android:textColor="?attr/appText" android:textSize="16sp" />
             </LinearLayout>
 
             <Space android:layout_width="9dp" android:layout_height="1dp" />
@@ -209,11 +209,11 @@
                 android:layout_height="108dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:background="@drawable/bg_gauge"
+                android:background="?attr/appGaugeBackground"
                 android:padding="13dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CASE" android:textColor="@color/liquid_text_faint" android:textSize="10sp" android:textStyle="bold" />
-                <ProgressBar android:id="@+id/case_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="11dp" android:max="100" android:progress="0" android:progressDrawable="@drawable/progress_liquid" />
-                <TextView android:id="@+id/case_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="—" android:textColor="@color/liquid_text" android:textSize="16sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CASE" android:textColor="?attr/appText_faint" android:textSize="10sp" android:textStyle="bold" />
+                <ProgressBar android:id="@+id/case_battery_bar" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="7dp" android:layout_marginTop="11dp" android:max="100" android:progress="0" android:progressDrawable="?attr/appProgressDrawable" />
+                <TextView android:id="@+id/case_battery_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="—" android:textColor="?attr/appText" android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -222,23 +222,23 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="vertical"
-            android:background="@drawable/bg_glass"
+            android:background="?attr/appSurface"
             android:padding="17dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
                 <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Find my earbuds" android:textColor="@color/liquid_text" android:textSize="15sp" android:textStyle="normal" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Play a sound when protocol support is available" android:textColor="@color/liquid_text_faint" android:textSize="11sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Find my earbuds" android:textColor="?attr/appText" android:textSize="15sp" android:textStyle="normal" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Play a sound when protocol support is available" android:textColor="?attr/appText_faint" android:textSize="11sp" />
                 </LinearLayout>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="LIVE" android:textColor="@color/liquid_primary" android:textSize="10sp" android:textStyle="bold" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="LIVE" android:textColor="?attr/appAccent" android:textSize="10sp" android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="27dp" android:text="Diagnostics" android:textColor="@color/liquid_text" android:textSize="16sp" android:textStyle="normal" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="27dp" android:text="Diagnostics" android:textColor="?attr/appText" android:textSize="16sp" android:textStyle="normal" />
 
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:background="@drawable/bg_glass_small" android:padding="14dp" android:text="Push subscription status" android:textColor="@color/liquid_text_soft" android:textSize="12sp" />
-        <TextView android:id="@+id/debug_status_text" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="-1dp" android:background="@drawable/bg_glass_small" android:padding="14dp" android:fontFamily="monospace" android:text="Subscription acknowledged: no&#10;Received a pushed update: no" android:textColor="@color/liquid_text_faint" android:textSize="11sp" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/bg_glass_small" android:padding="14dp" android:text="Raw data received" android:textColor="@color/liquid_text_soft" android:textSize="12sp" />
-        <TextView android:id="@+id/debug_text" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_glass_small" android:padding="14dp" android:fontFamily="monospace" android:text="(no data received from buds yet)" android:textColor="@color/liquid_text_faint" android:textSize="10sp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:background="?attr/appSurfaceSmall" android:padding="14dp" android:text="Push subscription status" android:textColor="?attr/appText_soft" android:textSize="12sp" />
+        <TextView android:id="@+id/debug_status_text" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="-1dp" android:background="?attr/appSurfaceSmall" android:padding="14dp" android:fontFamily="monospace" android:text="Subscription acknowledged: no&#10;Received a pushed update: no" android:textColor="?attr/appText_faint" android:textSize="11sp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="?attr/appSurfaceSmall" android:padding="14dp" android:text="Raw data received" android:textColor="?attr/appText_soft" android:textSize="12sp" />
+        <TextView android:id="@+id/debug_text" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="?attr/appSurfaceSmall" android:padding="14dp" android:fontFamily="monospace" android:text="(no data received from buds yet)" android:textColor="?attr/appText_faint" android:textSize="10sp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
