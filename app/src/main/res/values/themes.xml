@@ -14,20 +14,9 @@
     </style>
 
     <!-- ===================== CLASSIC ===================== -->
-    <!--
-        Solid dark Material 3.
-        Applied when prefs "theme" = "classic" (default).
-    -->
-    <style name="Theme.BudsCompanion" parent="Theme.BudsCompanion.Base">
-        <!-- Classic uses the default color tokens above — no overrides needed -->
-    </style>
+    <style name="Theme.BudsCompanion" parent="Theme.BudsCompanion.Base"/>
 
     <!-- ===================== LIQUID GLASS ===================== -->
-    <!--
-        Deep dark background with translucent frosted cards.
-        Applied when prefs "theme" = "liquid".
-        Cards use glass_surface + backdrop blur via LiquidCardView (see Java).
-    -->
     <style name="Theme.BudsCompanion.LiquidGlass" parent="Theme.BudsCompanion.Base">
         <item name="colorSurface">@color/glass_surface</item>
         <item name="colorOnSurface">@color/glass_text_primary</item>
@@ -36,10 +25,9 @@
         <item name="android:navigationBarColor">@color/glass_bg_primary</item>
     </style>
 
-    <!-- Text appearance overrides -->
+    <!-- Text appearance overrides (no custom font — uses system default) -->
     <style name="TextAppearance.Buds.Headline" parent="TextAppearance.Material3.HeadlineMedium">
         <item name="android:textColor">@color/text_primary</item>
-        <item name="android:fontFamily">@font/inter_bold</item>
     </style>
 
     <style name="TextAppearance.Buds.Body" parent="TextAppearance.Material3.BodyMedium">
