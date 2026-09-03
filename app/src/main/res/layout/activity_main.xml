@@ -101,6 +101,14 @@
                         android:text="Disconnected"
                         android:textColor="@color/liquid_text_soft"
                         android:textSize="13sp" />
+                    <TextView
+                        android:id="@+id/data_receiving_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Data receiving: OFF"
+                        android:textColor="@color/liquid_text_faint"
+                        android:textSize="11sp" />
                 </LinearLayout>
             </LinearLayout>
 
